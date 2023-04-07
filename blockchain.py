@@ -13,7 +13,7 @@ class Blockchain(object):
         self.current_transactions = []
 
         #Creat the genesis block
-        self.new_block(preciout_hash=1,proof=100)
+        self.new_block(previous_hash=1,proof=100)
         
     def new_block(self,proof,previous_hash=None):
         """
@@ -110,7 +110,7 @@ node_identifier = str(uuid4()).replace('-', '')
 
 #Instantiate the Blockchain
 blockchain = Blockchain()
-
+'''
 @app.route('/mine', methods=['GET'])
 def mine():
     return "We'll mine a new Block"
@@ -118,33 +118,7 @@ def mine():
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     return "We'll add a new transaction"
-
-@app.route('/chain', methods=['GET'])
-def full_chain():
-    response = {
-        'chain': blockchain.chain,
-        'length': len(blockchain.chain),
-    }
-    return jsonify(response),200
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
-@app.route('/transactions/new', methods=['POST'])
-def new_transaction():
-    values = request.get_json()
-
-    #Check that the required fields are in the POST'ed data
-    required = ['sender', 'recipient', 'amount']
-    if not all(k in values for k in required):
-        return 'Missing valuse', 400
-    
-    #Creat a new Transaction
-    index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
-
-    response = {'message': f'Transaction will be added to Block {index}'}
-    return jsonify(response), 201
-
+'''
 
 @app.route('/mine', methods=['GET'])
 def mine():
@@ -172,3 +146,30 @@ def mine():
         'previous_hash': block['previous_hash']
     }
     return jsonify(response),200
+
+@app.route('/transactions/new', methods=['POST'])
+def new_transaction():
+    values = request.get_json()
+
+    #Check that the required fields are in the POST'ed data
+    required = ['sender', 'recipient', 'amount']
+    if not all(k in values for k in required):
+        return 'Missing valuse', 400
+    
+    #Creat a new Transaction
+    index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
+
+    response = {'message': f'Transaction will be added to Block {index}'}
+    return jsonify(response), 201
+
+@app.route('/chain', methods=['GET'])
+def full_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain),
+    }
+    return jsonify(response),200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
