@@ -120,6 +120,8 @@ def new_transaction():
     return "We'll add a new transaction"
 '''
 
+#The APIs can be used in Postman app
+
 @app.route('/mine', methods=['GET'])
 def mine():
     #We run the proof of work algorithm to get the next proof...
